@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Navbar from './navbar';
 import Footer from './footer';
 
-const name = 'Mutaba G';
+const name = 'Mugtaba G';
 export const siteTitle = 'Next.js Oddward Blog slash Garden';
 
 export default function Layout({ children, home }) {

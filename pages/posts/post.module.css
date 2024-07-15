@@ -1,11 +1,11 @@
 .article {
-    @apply px-8 my-4
+    @apply flex flex-col items-center px-8 my-4 lg:px-16 
 }
 .article .cover {
-    @apply aspect-[16/9] w-full h-auto block
+    @apply aspect-[16/9] w-full h-auto block m-0 rounded-md
 }
-.article time {
-    @apply block text-center
+.article .header {
+    @apply flex flex-col md:flex-row lg:flex-nowrap md:gap-0 md:h-fit m-8 md:shadow-2xl md:rounded-2xl md:flex-grow-[1.5]
 }
 /* .article h2 + p, 
 .article h3 + p, 
@@ -14,33 +14,48 @@
 .article h6 + p {
     @apply mt-2 
 } */
+.article .header h1 {
+    @apply inline-block  text-2xl lg:text-4xl m-0 
+}
+.article .header .subtitle {
+    @apply text-lg font-extralight italic opacity-85
+}
+.avatar {
+    @apply w-8 h-8 rounded-full 
+}
+.article time {
+    @apply block text-center
+}
 .article h2 {
     @apply inline-block 
 }
-.article p {
-    @apply mt-2 mb-6 leading-7 max-w-[80ch]
+.content {
+    @apply text-lg max-w-[60ch] my-4 
 }
-.article p:has(+ h2) {
+.content p {
+    @apply mt-2 mb-6 leading-8 max-w-[80ch] 
+}
+.content p:has(+ h2) {
     margin-bottom: 2rem;
 }
-.article img {
+.content img {
     @apply w-4/5 h-auto m-6 shadow-sm
 }
-.article ul {
+.content ul {
     list-style-type: none;
     list-style-position: outside;
     padding-inline-start: 1.5rem;
     margin-bottom: 2rem;
 }
-.article ul li {
+.content ul li {
     @apply mb-2 
 }
-.article ul li::marker {
+.content ul li::marker {
     content: '→  ';
     color: var(--accent-solid);
     /* @apply text-yellow-500 */
 }
-.article em {
+.content em {
     font-style: italic;
     @apply text-white;
 }
