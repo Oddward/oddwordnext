@@ -1,0 +1,5 @@
+.v-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    rotate: 180deg;
+}

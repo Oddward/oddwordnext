@@ -1,0 +1,5 @@
+.heading {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    @apply hover:underline
+}

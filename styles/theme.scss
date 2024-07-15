@@ -1,0 +1,131 @@
+// sm: 640px (Small screens)
+// md: 768px (Medium screens)
+// lg: 1024px (Large screens)
+// xl: 1280px (Extra large screens)
+$bp-mobile: 640px;
+$bp-tablet: 768px;
+$bp-laptop: 1024px;
+$bp-desktop: 1280px;
+$bp-ultrawide: 2200px;
+
+:root {
+    font-size: 18px;
+}
+
+body {
+    --mono-rgb: 255 255 255;
+    --h1-color: transparent;
+    --h2-color: transparent;
+    --h3-color: #ffffffee;
+    --h1-size: 3rem;
+    --h2-size: 1.6rem;
+    --h3-size: 1.05rem;
+    --h4-size: 1.0rem;
+    --h5-size: 1rem;
+    --h6-size: 0.9rem;
+    --bg-dark: oklch(22.58% 0.06163841637233267 248.57054145688704);
+    --text-normal: 1rem;
+    --text-small: .8rem;
+    --text-emphasis: 1.2rem;
+    --leading-comfortable: 1.4;
+    --leading-normal: 1.1;
+    --leading-tight: 1;
+    
+    --surface-secondary: linear-gradient(
+        to top right, 
+        hsl(100 0% 14%) 0%, 
+        hsl(100 0% 6%) 100%);
+    --ok-bg-warm: radial-gradient(
+        circle at top left,
+        oklab(88% -0.02 0.18),
+        oklab(60% 0.26 0.01)
+    );
+    --ok-bg-cool: radial-gradient(
+        circle at bottom left in oklab,
+        yellow,
+        cyan
+    );
+    font-family: 'Satoshi', sans-serif;
+}
+@media screen and (min-width: $bp-laptop) {
+    body {
+        --h1-size: 3.5rem;
+        --h2-size: 2rem;
+        --h3-size: 1.4rem;
+        --h4-size: 1.2rem;
+        --h5-size: 1.1rem;
+        --h6-size: 1rem;
+    }
+}
+/*@media screen and (min-width: var(--md)) {
+    body {
+        --h1-size: 3.2rem;
+        --h2-size: 2.4rem;
+        --h3-size: 1.5rem;
+        --h4-size: 1.3rem;
+        --h5-size: 1.1rem;
+        --h6-size: 1.1rem;
+    }
+}*/
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+h1 {
+    font-size: var(--h1-size);
+    font-weight: 900;
+    font-variation-settings: 'wght' 900;
+    color: var(--h1-color);
+    background: var(--ok-bg-warm);
+    background-clip: text;
+    line-height: var(--leading-normal);
+}
+h2 {
+    font-size: var(--h2-size);
+    font-weight: 900;
+    font-variation-settings: 'wght' 900;
+    color: var(--h2-color);
+    background: var(--ok-bg-warm);
+    background-clip: text;
+    line-height: var(--leading-normal);
+    &:after {
+        content: '.';
+        color: white;
+        background: none;
+    }
+}
+h3 {
+    font-size: var(--h3-size);
+    font-weight: 900;
+    font-variation-settings: 'wght' 900;
+    color: var(--h3-color);
+    line-height: var(--leading-normal);
+    &:after {
+        content: '.';
+        background: var(--ok-bg-warm);
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
+}
+
+.text-warm {
+    color: transparent;
+    text-decoration-color: transparent;
+    background: var(--ok-bg-warm);
+    background-clip: text;
+}
+
+/* Accessibility packaging */
+@media screen and (prefers-reduced-motion: reduce) {  
+    * {
+      /* Very short durations means JavaScript that relies on events still works */
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+}
+@media (inverted-colors) {
+    img, video { 
+      filter: invert(100%);
+    }
+}

@@ -1,0 +1,46 @@
+.article {
+    @apply px-8 my-4
+}
+.article .cover {
+    @apply aspect-[16/9] w-full h-auto block
+}
+.article time {
+    @apply block text-center
+}
+/* .article h2 + p, 
+.article h3 + p, 
+.article h4 + p, 
+.article h5 + p, 
+.article h6 + p {
+    @apply mt-2 
+} */
+.article h2 {
+    @apply inline-block 
+}
+.article p {
+    @apply mt-2 mb-6 leading-7 max-w-[80ch]
+}
+.article p:has(+ h2) {
+    margin-bottom: 2rem;
+}
+.article img {
+    @apply w-4/5 h-auto m-6 shadow-sm
+}
+.article ul {
+    list-style-type: none;
+    list-style-position: outside;
+    padding-inline-start: 1.5rem;
+    margin-bottom: 2rem;
+}
+.article ul li {
+    @apply mb-2 
+}
+.article ul li::marker {
+    content: '→  ';
+    color: var(--accent-solid);
+    /* @apply text-yellow-500 */
+}
+.article em {
+    font-style: italic;
+    @apply text-white;
+}

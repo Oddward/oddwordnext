@@ -1,7 +1,15 @@
-html,
+/* sm: 640px (Small screens)
+md: 768px (Medium screens)
+lg: 1024px (Large screens)
+xl: 1280px (Extra large screens) */
+/* $bp-mobile: 640px;
+$bp-tablet: 768px;
+$bp-laptop: 1024px;
+$bp-desktop: 1280px;
+$bp-ultrawide: 2200px; */
+
+/* html,
 body {
-  padding: 0;
-  margin: 0;
   font-family:
     Inter,
     -apple-system,
@@ -15,18 +23,242 @@ body {
     Droid Sans,
     Helvetica Neue,
     sans-serif;
+} */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* basic defaults */
+:root {
+    --accent-solid: rgb(255, 208, 0);
+    font-size: 16;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+html, body { height: 100%; }
+
+body {
+    --accent-solid: rgb(255, 208, 0);
+    font-size: 16;
+    --mono-rgb: 255 255 255;
+    --h1-color: transparent;
+    --h2-color: transparent;
+    --h3-color: #ffffffee;
+    --h1-size: 3rem;
+    --h2-size: 1.6rem;
+    --h3-size: 1.05rem;
+    --h4-size: 1.0rem;
+    --h5-size: 1rem;
+    --h6-size: 0.9rem;
+    --bg-dark: oklch(22.58% 0.06163841637233267 248.57054145688704);
+    --text-normal: 1rem;
+    --text-small: .8rem;
+    --text-emphasis: 1.2rem;
+    --leading-comfortable: 1.4;
+    --leading-normal: 1.1;
+    --leading-tight: 1;
+    
+    --surface-secondary: linear-gradient(
+        to top right, 
+        hsl(100 0% 14%) 0%, 
+        hsl(100 0% 6%) 100%);
+    --ok-bg-warm: radial-gradient(
+        circle at top left,
+        oklab(88% -0.02 0.18),
+        oklab(60% 0.26 0.01)
+    );
+    --ok-bg-cool: radial-gradient(
+        circle at bottom left in oklab,
+        yellow,
+        cyan
+    );
+    font-family: 'Satoshi', sans-serif;
 }
 
-* {
-  box-sizing: border-box;
+@layer base {
+    body {
+        @apply relative bg-base text-base overflow-visible
+    }
+    @media screen and (min-width: 1024px) { /*laptop*/
+        body {
+            --h1-size: 3.5rem;
+            --h2-size: 2rem;
+            --h3-size: 1.4rem;
+            --h4-size: 1.2rem;
+            --h5-size: 1.1rem;
+            --h6-size: 1rem;
+        }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Be Vietnam Pro', sans-serif;
+        padding-bottom: .2em;
+    }
+    h1 {
+        font-size: var(--h1-size);
+        font-weight: 900;
+        font-variation-settings: 'wght' 900;
+        color: var(--h1-color);
+        background: var(--ok-bg-warm);
+        background-clip: text;
+        line-height: var(--leading-normal);
+    }
+    h2 {
+        font-size: var(--h2-size);
+        font-weight: 900;
+        font-variation-settings: 'wght' 900;
+        color: var(--h2-color);
+        background: var(--ok-bg-warm);
+        background-clip: text;
+        line-height: var(--leading-normal);
+        &:after {
+            content: '.';
+            color: white;
+            background: none;
+        }
+    }
+    h3 {
+        font-size: var(--h3-size);
+        font-weight: 900;
+        font-variation-settings: 'wght' 900;
+        color: var(--h3-color);
+        line-height: var(--leading-normal);
+        &:after {
+            content: '.';
+            background: var(--ok-bg-warm);
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+    }
 }
 
-img {
-  max-width: 100%;
-  height: auto;
+@layer components {
+    h1.main {
+        @apply text-5xl font-black
+    }
+    .text-orange-gradient, .pretty-link {
+        background: linear-gradient(225deg, rgb(255, 153, 0) 0%, rgb(255, 0, 53));
+        background: -o-linear-gradient(225deg, rgb(255, 153, 0) 0%, rgb(255, 0, 53));
+        background: -moz-linear-gradient(225deg, rgb(255, 153, 0) 0%, rgb(255, 0, 53));
+        background: -webkit-linear-gradient(45deg, rgb(255, 153, 0) 0%, rgb(255, 0, 53));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -webkit-box-decoration-break: clone;
+        /* padding-bottom: .2em; */
+    }
+    .floater-nav {
+        @apply fixed left-8 top-16 flex-col text-xl gap-12 w-32;
+    }
+    .floater-nav .logo {
+        width: 48px;
+        height: 48px;
+    }
+    .floater-nav ul {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .btn {
+        @apply inline-block flex flex-row gap-2 flex-nowrap justify-center align-middle py-2 px-4 rounded-md cursor-pointer
+    }
+    .btn-accent {
+        @apply bg-warm text-[--]
+    }
+    .btn-primary {
+        @apply bg-slate-200 text-warm hover:bg-accent
+    }
+    .btn-secondary {
+        @apply btn border border-2
+    }
+    .avatar {
+        @apply rounded-full w-8 h-8;
+    }
+}
+
+@layer utilities {
+    .bg-base {
+        @apply bg-slate-900
+    }
+    .invert .bg-base {
+        @apply bg-gray-200
+    }
+    .text-base {
+        @apply text-gray-200
+    }
+    .invert .text-base {
+        @apply text-slate-900
+    }
+    .text-accent {
+        @apply text-[--accent-solid]
+    }
+    .bg-accent {
+        @apply bg-[--accent-solid]
+    }
+    .bg-warm {
+        background: radial-gradient(
+            circle at top left,
+            oklab(88% -0.02 0.18),
+            oklab(60% 0.26 0.01)
+        );
+    }
+    .bg-cool {
+        background: radial-gradient(
+            circle at bottom left in oklab,
+            yellow,
+            cyan
+        );
+    }
+    .bg-linkedin{
+        background-color: #0077B5; /*LinkedIn blue*/
+    }
+    .bg-insta, .bg-insta-onhover:hover { /*background - Instagram*/
+        background: #f09433; 
+        background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+        background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+        background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+    }
+    .bg-dribbble {
+        background-color: #ea4c89; /*Dribbble pink*/
+    }
+    .text-warm {
+        color: transparent;
+        text-decoration-color: transparent;
+        background-clip: text;
+        @apply bg-warm
+    }
+    .text-cool {
+        color: transparent;
+        text-decoration-color: transparent;
+        background-clip: text;
+        @apply bg-cool
+    }
+    .hover-accent-bg:hover,
+    .hover-accent-bg.active {
+        @apply bg-[gold] text-slate-900
+    }
+    .hover-accent-bg:hover svg,
+    .hover-accent-bg.active svg {
+        @apply text-slate-900
+    }
+}
+
+
+/* Generic Elements */
+/* ... */
+
+/* Accessibility packaging */
+@media screen and (prefers-reduced-motion: reduce) {  
+  * {
+    /* Very short durations means JavaScript that relies on events still works */
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+@media (inverted-colors) {
+  img, video { 
+    filter: invert(100%);
+  }
 }
