@@ -19,7 +19,7 @@
 .header h1 {
     @apply inline-block  text-2xl lg:text-4xl leading-tight m-0 ;
 }
-.header .author {
+.author {
     @apply text-cool opacity-85 ;
 }
 .subtitle {
