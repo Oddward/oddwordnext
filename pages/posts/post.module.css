@@ -19,8 +19,10 @@
 .header h1 {
     @apply inline-block  text-2xl lg:text-4xl leading-tight m-0 ;
 }
-.author {
-    @apply text-cool opacity-85 ;
+.header .author {
+    background: var(--ok-bg-cool);
+    color: transparent;
+    @apply bg-clip-text opacity-85 ;
 }
 .subtitle {
     @apply text-lg font-extralight italic leading-tight opacity-85 ;
