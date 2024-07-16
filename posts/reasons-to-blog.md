@@ -38,7 +38,7 @@ Ultimately, a blog doesn't really need to be for anyone else, you can use it lik
 
 ## Own your traffic
 
-![Flow char of content flow from Instagram, Twitter, Youtube, and Reddit, to personal website](/img/traffic-to-site.png)
+<!-- ![Flow char of content flow from Instagram, Twitter, Youtube, and Reddit, to personal website](/img/traffic-to-site.png) -->
 
 When posting your high quality content on other social & community sites you're mostly directing traffic towards those websites, not just your profile. The big platforms make it easy to get started and handle much of the marketing for you, but just as well they'll exercise their right to pull attention away from your content and onto anything else that they were paid to highlight or that's loud and exciting to get people lost in a rabbit hole. You're competing for attention at every moment, even after someone had already decided to engage with your content. If it ever happens that your account is closed, your profile lost, or the site is closed, you also lose your entire history there; all your followers, friends and posts gone.
 
@@ -48,7 +48,7 @@ A common feature of owning your traffic is also keeping track of your audience; 
 
 ## Supplement your other content
 
-![Flywheel for content crossing between your personal site and your profile on external sites](/img/site-feedback-loop.png)
+<!-- ![Flywheel for content crossing between your personal site and your profile on external sites](/img/site-feedback-loop.png) -->
 
 A lot of us are for the most part content with just tweeting or posting images with captions, but there are times when you want to elaborate on something or explore it in depth, or write an open letter. Instead of using a twitter thread of 20 tweets, linking to a twitlonger page or using a long chain of stories, you might use your blog or site to dive deep into the subject in isolation and link to it. You can also create a positive feedback loop between your content on different social media platforms and your site. It's likely that your social media platforms will have more traffic overall, but the people that are willing to go to your site are the cream of the crop, following you at a more personal level.
 

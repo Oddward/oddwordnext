@@ -1,39 +1,59 @@
 .article {
-    @apply flex flex-col items-center px-8 my-4 lg:px-16 
+    @apply flex flex-col items-center px-2 my-4 sm:px-4 md:px-8 lg:px-16 
 }
-.article .cover {
-    @apply aspect-[16/9] w-full h-auto block m-0 rounded-md
+.cover {
+    @apply aspect-[16/9] w-full h-auto block rounded-md 
 }
-.article .header {
-    @apply flex flex-col md:flex-row lg:flex-nowrap md:gap-0 md:h-fit m-8 md:shadow-2xl md:rounded-2xl md:flex-grow-[1.5]
+.header {
+    @apply flex flex-col mt-4 mx-2 ;
+    @apply sm:max-md:mx-10 sm:shadow-2xl sm:rounded-2xl sm:flex-grow-[1.5] sm:border sm:border-slate-800 ;
+    @apply md:flex-row md:gap-0 md:h-fit md:shadow-2xl md:rounded-2xl md:flex-grow-[1.5] md:border md:border-slate-800 border-opacity-50 ;
+    @apply lg:flex-nowrap ;
 }
-/* .article h2 + p, 
-.article h3 + p, 
-.article h4 + p, 
-.article h5 + p, 
-.article h6 + p {
-    @apply mt-2 
-} */
-.article .header h1 {
-    @apply inline-block  text-2xl lg:text-4xl m-0 
+.header div:has(.cover) {
+    @apply my-2 sm:my-0 sm:p-4 md:w-1/2 ;
 }
-.article .header .subtitle {
-    @apply text-lg font-extralight italic opacity-85
+.header div:has(h1) {
+    @apply flex flex-col p-2 sm:py-4 sm:px-8 md:px-4 ;
+}
+.header h1 {
+    @apply inline-block  text-2xl lg:text-4xl leading-tight m-0 
+}
+.header .author {
+    @apply text-cool opacity-85 ;
+}
+.subtitle {
+    @apply text-lg font-extralight italic leading-tight opacity-85
 }
 .avatar {
-    @apply w-8 h-8 rounded-full 
+    @apply w-8 h-8 rounded-full border-2 border-slate-400 
 }
-.article time {
-    @apply block text-center
+.tag {
+    @apply text-sm py-1 px-3 m-2 bg-slate-800 rounded-full ;
 }
-.article h2 {
-    @apply inline-block 
+.meta {
+    grid-template-columns: 3fr 1fr 3fr;
+    @apply flex flex-col gap-3 md:grid md:content-center md:items-center md:gap-0 text-slate-400 my-5 md:my-8 ;
+}
+.meta span {
+    @apply block sm:max-md:order-1 text-center md:text-right ;
+}
+.meta time {
+    @apply block sm:max-md:order-2 text-center md:text-left ;
+}
+.article h2,
+.article h3 {
+    @apply inline-block text-2xl lg:text-3xl 
+}
+.article h4, 
+.article h5 {
+    @apply text-xl lg:text-2xl 
 }
 .content {
-    @apply text-lg max-w-[60ch] my-4 
+    @apply text-lg my-4 
 }
 .content p {
-    @apply mt-2 mb-6 leading-8 max-w-[80ch] 
+    @apply mt-2 mb-6 leading-8 sm:leading-9 opacity-85 font-medium
 }
 .content p:has(+ h2) {
     margin-bottom: 2rem;
@@ -58,4 +78,10 @@
 .content em {
     font-style: italic;
     @apply text-white;
+}
+.about-links {
+    @apply flex flex-row gap-2 
+}
+.about-links li {
+    @apply w-8 h-8 text-slate-400 hover:text-slate-200 
 }

@@ -5,10 +5,11 @@ import { Icon } from "@iconify-icon/react";
 import { useRef, useState } from "react";
 
 export default function Navbar() {
-    let [contactShow, toggleContactShow] = useState( false )
+    const contact = useRef(null)
+    const [contactShow, setContactShow] = useState(false)
 
     const handleContactShow = () => {
-        toggleContactShow(contactShow => !contactShow)
+        setContactShow(!contactShow)
         console.log('Toggled contact form')
     }
 
@@ -20,24 +21,26 @@ export default function Navbar() {
             <ul className="links flex gap-12 md:gap-10">
                 <PageLink label="Home" iconLabel="ri:home-2-line" className="h-full" />
                 <PageLink label="About" iconLabel="ri:user-smile-line" className="h-full" />
+                {/* <div className={`inline-block`} onClick={handleContactShow} > */}
+                {/* <span onClick={handleContactShow}> */}
                 <PageLink 
+                    onClick={handleContactShow}
+                    active={contactShow}
                     label="Contact" 
-                    className={'hover-accent-bg h-full ' + contactShow ? 'active':''} 
-                    onClick={handleContactShow}>
-                    <Icon icon="ri:message-3-line" size="1.2em" className="icon" />
-                    {/* <template #pointer> */}
-                        <Icon icon="ri:arrow-down-line" size="1.2em" className="icon text-[--accent-solid]" />
-                    {/* </template> */}
+                    classes={`hover-accent-bg h-full`} 
+                    iconLabel="ri:message-3-line">
                 </PageLink>
+                {/* </span> */}
+                {/* </div> */}
             </ul>
-            {/* <NavContactForm className={contactShow ? 'hidden':''} /> */}
+            <NavContactForm contactShow={contactShow} />
         </nav>
     );
 }
 
-function NavContactForm() {
+function NavContactForm({ contactShow }) {
     return(
-        <div id="contact-panel" className="absolute z-20 top-full right-0 flex flex-col gap-4 h-auto w-full sm:w-96 bg-[gold] text-slate-900 px-8 pb-12 shadow-md">
+        <div id="contact-panel" className={`absolute z-20 top-full right-0 flex flex-col gap-4 h-auto w-full sm:w-96 bg-[gold] text-slate-900 px-8 pb-12 shadow-lg ${contactShow ? '':'hidden'}`}>
             <p className="text-3xl font-black pt-4">Get in Touch</p>
             <form action="" method="post" className="flex flex-col gap-2 py-2">
                 <div>

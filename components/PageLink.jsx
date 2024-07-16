@@ -1,14 +1,21 @@
 
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function PageLink({ 
     iconLabel = 'ri:arrow-right-line', 
     iconPointer = 'ri:arrow-right-line',
     iconSize = '1.2em',
-    label = 'Home' }) {
+    label = 'Home',
+    onClick,
+    active,
+    classes }) 
+    {
+    // const [active, setActive] = useState( false )
+
     return(
-        <Link href="#" className="page-link relative inline-flex content-center items-center gap-2 px-2 py-1 group">
+        <Link href="#" className={`page-link relative inline-flex content-center items-center gap-2 px-2 py-1 group ${active ? 'active':''} ${classes}`} onClick={onClick}>
             <span className="icons-container inline-block relative top-[calc(50% - 0.6em)] h-[1.2em] w-[1.2em] overflow-hidden transition-all duration-200">
                     <Icon 
                         icon={ iconLabel } size={ iconSize } 

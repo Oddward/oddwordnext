@@ -223,20 +223,21 @@ body {
         background-color: #ea4c89; /*Dribbble pink*/
     }
     .text-warm {
+        background: var(--ok-bg-warm);
+        background-clip: text;
         color: transparent;
         text-decoration-color: transparent;
-        background-clip: text;
-        @apply bg-warm
     }
     .text-cool {
+        background: var(--ok-bg-cool);
+        background-clip: text;
         color: transparent;
         text-decoration-color: transparent;
-        background-clip: text;
-        @apply bg-cool
     }
     .hover-accent-bg:hover,
     .hover-accent-bg.active {
-        @apply bg-[gold] text-slate-900
+        --accent-solid: rgb(15 23 42);
+        @apply bg-[gold] text-slate-900 ;
     }
     .hover-accent-bg:hover svg,
     .hover-accent-bg.active svg {
