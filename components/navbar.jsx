@@ -1,5 +1,8 @@
+'use client'
+
 import Logo from "./logo";
 import PageLink from "./PageLink";
+
 import styles from "./navbar.module.css";
 import { Icon } from "@iconify-icon/react";
 import { useRef, useState } from "react";

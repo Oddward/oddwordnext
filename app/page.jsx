@@ -1,30 +1,15 @@
-import Head from "next/head";
-import Layout, { siteTitle } from "../components/Layout";
-import utilStyles from "../styles/utils.module.css";
-import { getSortedPostsData } from "../lib/posts";
-import Link from "next/link";
-import Date from "../components/date";
-import PostCard from "../components/post-card";
-import Image from "next/image";
-import PageLink from "../components/PageLink";
-import SectionHeading from "../components/section-heading";
 
-export async function getStaticProps() {
-    const allPostsData = getSortedPostsData();
+import { getSortedPostsData } from '../lib/posts'
+import Image from 'next/image'
+import PostCard from '../components/post-card'
+import SectionHeading from '../components/section-heading'
 
-    return {
-        props: {
-            allPostsData,
-        },
-    };
-}
+// Static generation: data read at build time (replaces getStaticProps).
+export default async function Home() {
+    const allPostsData = getSortedPostsData()
 
-export default function Home({ allPostsData }) {
     return (
-        <Layout home>
-            <Head>
-                <title>{siteTitle}</title>
-            </Head>
+        <>
             <section
                 id="hero"
                 className="flex flex-wrap md:flex-nowrap content-center justify-around gap-6 py-8 px-8"
@@ -55,10 +40,10 @@ export default function Home({ allPostsData }) {
                 </article>
             </section>
 
-            <div class="flex flex-col gap-4 my-4">
-                <div class="bg-slate-500 h-[2px] w-1/2 mr-auto"></div>
-                <div class="bg-slate-500 h-[2px] w-1/2 mx-auto"></div>
-                <div class="bg-slate-500 h-[2px] w-1/2 ml-auto"></div>
+            <div className="flex flex-col gap-4 my-4">
+                <div className="bg-slate-500 h-[2px] w-1/2 mr-auto"></div>
+                <div className="bg-slate-500 h-[2px] w-1/2 mx-auto"></div>
+                <div className="bg-slate-500 h-[2px] w-1/2 ml-auto"></div>
             </div>
             <section id="articles" className={`relative py-8 px-8 uxl:my-8`}>
                 <SectionHeading children="Articles" />
@@ -82,6 +67,6 @@ export default function Home({ allPostsData }) {
                     )}
                 </ul>
             </section>
-        </Layout>
-    );
+        </>
+    )
 }
