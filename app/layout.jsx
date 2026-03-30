@@ -1,7 +1,8 @@
 import '../styles/global.css'
 import { siteTitle } from '../lib/site'
-import Navbar, { NavContactForm } from '../components/navbar'
+import Navbar, { NavContactForm, NavNotesSidebar } from '../components/navbar'
 import Footer from '../components/footer'
+import GardenProvider from '../components/GardenProvider'
 
 // App Router metadata replaces next/head in _app and Layout (site-wide defaults).
 export const metadata = {
@@ -30,19 +31,17 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <body className="flex flex-col">
-                <Navbar />
-                <input
-                    type="checkbox"
-                    id="contact-toggle"
-                    className="hidden peer/contact"
-                />
-                <NavContactForm />
+                <GardenProvider>
+                    <Navbar />
+                    <NavContactForm />
+                    <NavNotesSidebar />
 
-                <main>
-                    {children}
-                </main>
+                    <main>
+                        {children}
+                    </main>
 
-                <Footer />
+                    <Footer />
+                </GardenProvider>
             </body>
         </html>
     )

@@ -1,0 +1,127 @@
+'use client'
+
+import { useRef, useState, useEffect, useCallback } from 'react'
+import HighlightToolbar from './HighlightToolbar'
+import useGardenStore from '../store/gardenStore'
+
+/**
+ * Wraps post content to enable ephemeral text highlighting and note capture.
+ *
+ * Highlights are stored in local component state only — they are cleared when
+ * the user navigates away or reloads. To persist content, users click
+ * "Add to Notes" which saves to the Zustand store (localStorage-backed).
+ *
+ * Props:
+ *   children – the rendered post content (dangerouslySetInnerHTML div, etc.)
+ *   postId   – the post's URL slug, passed to notes for source attribution
+ */
+export default function HighlightableContent({ children, postId }) {
+    const contentRef = useRef(null)
+    const [toolbar, setToolbar] = useState(null)
+    // toolbar shape: { top, left, text, range }
+
+    const addNote = useGardenStore((s) => s.addNote)
+    const openSidebar = useGardenStore((s) => s.openSidebar)
+
+    // ── Selection detection ──────────────────────────────────────────────────
+    const handleMouseUp = useCallback((e) => {
+        // Short delay so the browser finalises the selection object
+        setTimeout(() => {
+            const sel = window.getSelection()
+            if (!sel || sel.isCollapsed || !sel.rangeCount) {
+                setToolbar(null)
+                return
+            }
+
+            const range = sel.getRangeAt(0)
+            const text = sel.toString().trim()
+            if (!text) { setToolbar(null); return }
+
+            // Only trigger if the selection is inside our content area
+            if (!contentRef.current?.contains(range.commonAncestorContainer)) {
+                setToolbar(null)
+                return
+            }
+
+            const rect = range.getBoundingClientRect()
+            // Position toolbar centred above the selection, clamped to viewport
+            const toolbarWidth = 220
+            const left = Math.min(
+                Math.max(rect.left + window.scrollX + rect.width / 2 - toolbarWidth / 2, 8),
+                window.innerWidth - toolbarWidth - 8
+            )
+            const top = rect.top + window.scrollY - 52 // 52px above selection
+
+            setToolbar({ top, left, text, range })
+        }, 10)
+    }, [])
+
+    // Dismiss on outside click or Escape
+    useEffect(() => {
+        const handleKeyDown = (e) => { if (e.key === 'Escape') setToolbar(null) }
+        const handleClick = (e) => {
+            const tb = document.getElementById('highlight-toolbar')
+            if (tb && tb.contains(e.target)) return
+            if (!contentRef.current?.contains(e.target)) setToolbar(null)
+        }
+        document.addEventListener('keydown', handleKeyDown)
+        document.addEventListener('mousedown', handleClick)
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+            document.removeEventListener('mousedown', handleClick)
+        }
+    }, [])
+
+    // ── Toolbar actions ──────────────────────────────────────────────────────
+    const handleHighlight = useCallback((colorName, colorCls) => {
+        if (!toolbar?.range) return
+        try {
+            const mark = document.createElement('mark')
+            mark.className = `highlight highlight-${colorName}`
+            mark.dataset.highlightId = crypto.randomUUID()
+
+            // surroundContents fails on partial elements — clone + replace instead
+            const frag = toolbar.range.extractContents()
+            mark.appendChild(frag)
+            toolbar.range.insertNode(mark)
+
+            window.getSelection()?.removeAllRanges()
+            setToolbar(null)
+        } catch (err) {
+            console.warn('Could not wrap selection:', err)
+            setToolbar(null)
+        }
+    }, [toolbar])
+
+    const handleAddToNotes = useCallback(() => {
+        if (!toolbar?.text) return
+        addNote('', toolbar.text, postId)
+        openSidebar('notes')
+        setToolbar(null)
+        window.getSelection()?.removeAllRanges()
+    }, [toolbar, addNote, openSidebar, postId])
+
+    const handleCopy = useCallback(async () => {
+        if (!toolbar?.text) return
+        try {
+            await navigator.clipboard.writeText(toolbar.text)
+        } catch {
+            /* silent */
+        }
+        setToolbar(null)
+        window.getSelection()?.removeAllRanges()
+    }, [toolbar])
+
+    return (
+        <div ref={contentRef} onMouseUp={handleMouseUp} className="highlightable-content">
+            {children}
+            <HighlightToolbar
+                position={toolbar ? { top: toolbar.top, left: toolbar.left } : null}
+                onHighlight={handleHighlight}
+                onAddToNotes={handleAddToNotes}
+                onCopy={handleCopy}
+                onDismiss={() => setToolbar(null)}
+            />
+        </div>
+    )
+}

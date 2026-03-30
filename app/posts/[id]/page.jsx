@@ -5,6 +5,7 @@ import styles from './post.module.css'
 import Image from 'next/image'
 import Logo from '../../../components/logo'
 import { Icon } from '@iconify-icon/react/dist/iconify.mjs'
+import HighlightableContent from '../../../components/HighlightableContent'
 
 // Build a static path per post (replaces getStaticPaths).
 export async function generateStaticParams() {
@@ -65,12 +66,14 @@ export default async function Post({ params }) {
                         <Date dateString={postData.date} />
                     </div>
 
-                    <div
-                        className={styles.content}
-                        dangerouslySetInnerHTML={{
-                            __html: postData.contentHtml,
-                        }}
-                    />
+                    <HighlightableContent postId={`/posts/${id}`}>
+                        <div
+                            className={styles.content}
+                            dangerouslySetInnerHTML={{
+                                __html: postData.contentHtml,
+                            }}
+                        />
+                    </HighlightableContent>
 
                     <div className={`flex flex-row gap-4 w-full mx-8`}>
                         <hr className="border-slate-600 w-full" />

@@ -65,10 +65,10 @@ export default function PostCard({
             } catch (err) {
                 alert(
                     "Could not save it for you. You can add this page to your bookmarks by pressing " +
-                        (navigator.userAgent.toLowerCase().indexOf("mac") != -1
-                            ? "Command/Cmd"
-                            : "CTRL") +
-                        " + D on your keyboard."
+                    (navigator.userAgent.toLowerCase().indexOf("mac") != -1
+                        ? "Command/Cmd"
+                        : "CTRL") +
+                    " + D on your keyboard."
                 );
             }
         }
@@ -76,7 +76,7 @@ export default function PostCard({
     };
 
     return (
-        <div className="card-post-result inline-flex flex-col md:flex-row w-80 max-w-80 min-w-max h-auto md:w-4/5 md:max-w-none md:min-w-0 md:h-32 lg:h-48 overflow-hidden my-4 rounded-md bg-gray-900 border-2 border-slate-700 hover:border-slate-300">
+        <div className="card-post-result inline-flex flex-col md:flex-row w-full max-w-4xl h-auto md:h-32 lg:h-48 overflow-hidden my-4 rounded-md bg-gray-900 border-2 border-slate-700 hover:border-slate-300">
             <a
                 href={href}
                 className={`aspect-[4/3] w-full h-auto md:h-full md:w-auto`}

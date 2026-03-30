@@ -2,19 +2,16 @@
 
 import Logo from "./logo";
 import PageLink from "./PageLink";
+import NoteItem from "./NoteItem";
 
 import styles from "./navbar.module.css";
 import { Icon } from "@iconify-icon/react";
 import { useRef, useState } from "react";
+import useGardenStore from "../store/gardenStore";
 
 export default function Navbar() {
-    const contact = useRef(null);
-    const [contactShow, setContactShow] = useState(false);
-
-    const handleContactShow = () => {
-        setContactShow(!contactShow);
-        console.log("Toggled contact form");
-    };
+    const toggleSidebar = useGardenStore((s) => s.toggleSidebar);
+    const activeSidebar = useGardenStore((s) => s.activeSidebar);
 
     return (
         <nav className="fixed bottom-0 md:sticky md:bottom-auto md:top-0 z-30 flex justify-between w-full px-6 py-4 border-t border-b border-slate-700 bg-slate-900 uxl:floater-nav">
@@ -36,49 +33,59 @@ export default function Navbar() {
                     iconLabel="ri:user-smile-line"
                     className="h-full"
                 />
-                {/* <PageLink
-                    onClick={handleContactShow}
-                    active={contactShow}
-                    label="Contact"
-                    classes={`hover-accent-bg h-full`}
-                    iconLabel="ri:message-3-line"
-                /> */}
-                <label
-                    htmlFor="contact-toggle"
-                    className="size-10 rounded-full border border-slate-400 text-[gold] grid place-items-center cursor-pointer"
+                <button
+                    onClick={() => toggleSidebar('contact')}
+                    aria-pressed={activeSidebar === 'contact'}
+                    className={`size-10 rounded-full border text-[gold] grid place-items-center cursor-pointer transition-colors duration-150 ${
+                        activeSidebar === 'contact'
+                            ? 'border-[gold] bg-[gold]/10'
+                            : 'border-slate-400'
+                    }`}
+                    title="Contact"
                 >
-                    <Icon name="ri:arrow-arrow-left-circle-line"></Icon>
-                </label>
-                <label
-                    htmlFor="notes-toggle"
-                    className="size-10 rounded-full border border-slate-400 text-[gold] grid place-items-center cursor-pointer"
+                    <Icon icon="ri:arrow-left-circle-line" />
+                </button>
+                <button
+                    onClick={() => toggleSidebar('notes')}
+                    aria-pressed={activeSidebar === 'notes'}
+                    className={`size-10 rounded-full border text-[gold] grid place-items-center cursor-pointer transition-colors duration-150 ${
+                        activeSidebar === 'notes'
+                            ? 'border-[gold] bg-[gold]/10'
+                            : 'border-slate-400'
+                    }`}
+                    title="Your Notes"
                 >
-                    <Icon name="ri:quill-pen-line"></Icon>
-                </label>
+                    <Icon icon="ri:quill-pen-line" />
+                </button>
             </ul>
-            {/* Contact sidebar moved to main */}
         </nav>
     );
 }
 
 export function NavContactForm() {
+    const activeSidebar = useGardenStore((s) => s.activeSidebar);
+    const closeSidebar  = useGardenStore((s) => s.closeSidebar);
+    const isOpen = activeSidebar === 'contact';
+
     return (
         <div
             id="contact-panel"
-            className={`fixed z-10 top-0 -right-96 pt-20 flex flex-col gap-4 h-full w-xl sm:w-96 border-s border-slate-700 bg-slate-900 text-white px-8 pb-12 overflow-hidden transition-all duration-200 ease-in-out peer-checked/contact:right-0`}
+            className={`fixed z-20 top-0 pt-20 flex flex-col gap-4 h-full w-xl sm:w-96 border-s border-slate-700 bg-slate-900 text-white px-8 pb-12 overflow-hidden transition-all duration-200 ease-in-out ${
+                isOpen ? 'right-0' : '-right-[30rem]'
+            }`}
         >
-            {/* <label
-                htmlFor="contact-toggle"
-                className="size-10 rounded-full border border-slate-400 grid place-items-center cursor-pointer"
-            >
-                <Icon name="ri:arrow-arrow-right-circle-line"></Icon>
-            </label> */}
-            <p className="text-3xl font-black pt-4">Get in Touch</p>
+            <div className="flex items-center justify-between pt-4">
+                <p className="text-3xl font-black">Get in Touch</p>
+                <button
+                    onClick={closeSidebar}
+                    className="text-slate-400 hover:text-white transition-colors"
+                    title="Close"
+                >
+                    <Icon icon="ri:close-line" width="20" />
+                </button>
+            </div>
             <form action="" method="post" className="flex flex-col gap-2 py-2">
                 <div>
-                    {/* <label htmlFor="Name" className="text-sm hidden">
-                        name
-                    </label> */}
                     <input
                         type="text"
                         name="Name"
@@ -87,9 +94,6 @@ export function NavContactForm() {
                     />
                 </div>
                 <div>
-                    {/* <label htmlFor="Email" className="text-sm hidden">
-                        email
-                    </label> */}
                     <input
                         type="mail"
                         name="Email"
@@ -98,9 +102,6 @@ export function NavContactForm() {
                     />
                 </div>
                 <div>
-                    {/* <label htmlFor="Message" className="text-sm hidden">
-                        message
-                    </label> */}
                     <input
                         type="textarea"
                         name="Message"
@@ -108,7 +109,6 @@ export function NavContactForm() {
                         placeholder="enter your message..."
                     />
                 </div>
-                {/* <input type="button" value="Send" className={styles.btn} /> */}
                 <button type="button" role="submit" className={styles.btn}>
                     <Icon icon="ri:send-plane-fill" size="1.2em" class="icon" />
                     <span>Send</span>
@@ -116,21 +116,108 @@ export function NavContactForm() {
             </form>
             <hr />
             <button type="button" className={styles.btn}>
-                <Icon
-                    icon="icon-park-outline:clipboard"
-                    size="1.2em"
-                    class="icon"
-                />
+                <Icon icon="icon-park-outline:clipboard" size="1.2em" class="icon" />
                 <span>Copy email address</span>
             </button>
             <button type="button" className={styles.btn}>
-                <Icon
-                    icon="icon-park-outline:mail-edit"
-                    size="1.2em"
-                    class="icon"
-                />
+                <Icon icon="icon-park-outline:mail-edit" size="1.2em" class="icon" />
                 <span>Open mail client</span>
             </button>
+        </div>
+    );
+}
+
+export function NavNotesSidebar() {
+    const activeSidebar = useGardenStore((s) => s.activeSidebar);
+    const closeSidebar  = useGardenStore((s) => s.closeSidebar);
+    const notes         = useGardenStore((s) => s.notes);
+    const addNote       = useGardenStore((s) => s.addNote);
+    const shareNotes    = useGardenStore((s) => s.shareNotes);
+    const clearAll      = useGardenStore((s) => s.clearAll);
+
+    const [noteText, setNoteText] = useState('');
+    const isOpen = activeSidebar === 'notes';
+
+    const handleSave = () => {
+        const trimmed = noteText.trim();
+        if (!trimmed) return;
+        addNote(trimmed, null, null);
+        setNoteText('');
+    };
+
+    return (
+        <div
+            id="notes-panel"
+            className={`fixed z-20 top-0 pt-20 flex flex-col gap-4 h-full w-full sm:w-96 border-s border-slate-700 bg-slate-900 text-white px-8 pb-12 overflow-y-auto transition-all duration-300 ease-in-out ${
+                isOpen ? 'right-0' : '-right-[40rem]'
+            }`}
+        >
+            <div className="flex items-center justify-between pt-4">
+                <p className="text-3xl font-black">Notes</p>
+                <div className="flex gap-2">
+                    {notes.length > 0 && (
+                        <>
+                            <button
+                                onClick={shareNotes}
+                                className="text-slate-400 hover:text-white transition-colors"
+                                title="Share notes"
+                            >
+                                <Icon icon="ri:share-line" width="18" />
+                            </button>
+                            <button
+                                onClick={clearAll}
+                                className="text-slate-400 hover:text-red-400 transition-colors"
+                                title="Clear all notes"
+                            >
+                                <Icon icon="ri:delete-bin-line" width="18" />
+                            </button>
+                        </>
+                    )}
+                    <button
+                        onClick={closeSidebar}
+                        className="text-slate-400 hover:text-white transition-colors"
+                        title="Close"
+                    >
+                        <Icon icon="ri:close-line" width="20" />
+                    </button>
+                </div>
+            </div>
+
+            {/* Freeform note composer */}
+            <div className="flex flex-col gap-2">
+                <textarea
+                    className={`${styles["text-input"]} resize-none h-24`}
+                    placeholder="Write a note..."
+                    value={noteText}
+                    onChange={(e) => setNoteText(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSave();
+                    }}
+                />
+                <button
+                    onClick={handleSave}
+                    disabled={!noteText.trim()}
+                    className={`${styles.btn} disabled:opacity-40 disabled:cursor-not-allowed`}
+                >
+                    <Icon icon="ri:save-3-line" size="1.2em" class="icon" />
+                    <span>Save Note</span>
+                </button>
+            </div>
+
+            {/* Saved notes list */}
+            {notes.length > 0 ? (
+                <ul className="flex flex-col gap-3 mt-2">
+                    {notes.map((note) => (
+                        <li key={note.id}>
+                            <NoteItem note={note} />
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p className="text-slate-500 text-sm text-center mt-4">
+                    Select text on any article to save highlights and notes.
+                </p>
+            )}
         </div>
     );
 }
