@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
                     <NavContactForm />
                     <NavNotesSidebar />
 
-                    <main>
+                    <main className="pt-20">
                         {children}
                     </main>
 
