@@ -25,25 +25,27 @@ body {
     sans-serif;
 } */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-uxl: 2000px;
+}
 
 /* basic defaults */
 :root {
     --accent-solid: rgb(255, 208, 0);
     /* OKLCH tokens */
-    --primary-hue: 45;
-    --primary-chroma: 0.26;
-    --primary-lightness: 0.6;
+    --primary-hue: 92.23;
+    --primary-chroma: 0.1786;
+    --primary-lightness: 0.873;
     --primary-color: oklch(var(--primary-lightness) var(--primary-chroma) var(--primary-hue));
     --primary-color-light: oklch(var(--primary-lightness) var(--primary-chroma) var(--primary-hue));
     --primary-color-dark: oklch(var(--primary-lightness) var(--primary-chroma) var(--primary-hue));
 
     & .dark {
-        --primary-hue: 45;
-        --primary-chroma: 0.26;
-        --primary-lightness: 0.6;
+        --primary-hue: 92.23;
+        --primary-chroma: 0.1786;
+        --primary-lightness: 0.873;
         --primary-color: oklch(var(--primary-lightness) var(--primary-chroma) var(--primary-hue));
         --primary-color-light: oklch(var(--primary-lightness) var(--primary-chroma) var(--primary-hue));
         --primary-color-dark: oklch(var(--primary-lightness) var(--primary-chroma) var(--primary-hue));
@@ -94,7 +96,10 @@ body {
 
 @layer base {
     body {
-        @apply relative bg-base text-base overflow-visible
+        @apply relative bg-slate-900 text-gray-200 overflow-visible;
+    }
+    .invert body {
+        @apply bg-gray-200 text-slate-900;
     }
     @media screen and (min-width: 1024px) { /*laptop*/
         body {
@@ -128,6 +133,7 @@ body {
         background: var(--ok-bg-warm);
         background-clip: text;
         line-height: var(--leading-normal);
+        
         &:after {
             content: '.';
             color: white;
@@ -140,6 +146,7 @@ body {
         font-variation-settings: 'wght' 900;
         color: var(--h3-color);
         line-height: var(--leading-normal);
+        
         &:after {
             content: '.';
             background: var(--ok-bg-warm);
@@ -148,11 +155,14 @@ body {
             background-clip: text;
         }
     }
+    button, a, input, textarea {
+        cursor: pointer;
+    }
 }
 
 @layer components {
     h1.main {
-        @apply text-5xl font-black
+        @apply text-5xl font-black;
     }
     .text-orange-gradient, .pretty-link {
         background: linear-gradient(225deg, rgb(255, 153, 0) 0%, rgb(255, 0, 53));
@@ -177,16 +187,36 @@ body {
         gap: 2rem;
     }
     .btn {
-        @apply inline-block flex flex-row gap-2 flex-nowrap justify-center align-middle py-2 px-4 rounded-md cursor-pointer
+        /*
+          Button variants live here (global, not CSS modules).
+          Keep all 5 variants together so they don't get lost during refactors.
+
+          IMPORTANT: Tailwind `@apply` only accepts Tailwind utilities.
+          Do NOT try to apply custom classes via @apply (e.g. applying the `.btn` class).
+          Tailwind will error because custom classes are not utilities.
+        */
+        @apply inline-flex flex-row gap-2 flex-nowrap items-center justify-center align-middle py-2 px-4 rounded-md cursor-pointer;
+    }
+    .btn-solid {
+        @apply inline-flex flex-row gap-2 flex-nowrap items-center justify-center align-middle py-2 px-4 rounded-md cursor-pointer w-full bg-slate-900 text-white hover:bg-slate-700 active:scale-95 transition-transform duration-200;
+    }
+    .btn-subtle {
+        @apply inline-flex flex-row gap-2 flex-nowrap items-center justify-center align-middle py-2 px-4 rounded-md cursor-pointer w-full bg-slate-800/60 text-slate-100 hover:bg-slate-800 active:scale-95 transition-transform duration-200;
+    }
+    .btn-ghost {
+        @apply inline-flex flex-row gap-2 flex-nowrap items-center justify-center align-middle py-2 px-4 rounded-md cursor-pointer w-full bg-transparent text-slate-200 hover:bg-slate-800/40 active:scale-95 transition-transform duration-200;
+    }
+    .btn-outline {
+        @apply inline-flex flex-row gap-2 flex-nowrap items-center justify-center align-middle py-2 px-4 rounded-md cursor-pointer w-full bg-transparent text-slate-200 border border-slate-600 hover:border-slate-400 hover:bg-slate-800/30 active:scale-95 transition-transform duration-200;
+    }
+    .btn-plain {
+        @apply inline-flex flex-row gap-2 flex-nowrap items-center justify-center align-middle py-2 px-4 rounded-md cursor-pointer w-full bg-transparent text-slate-200 hover:underline underline-offset-4;
     }
     .btn-accent {
-        @apply bg-warm text-[--]
+        background: radial-gradient(circle at top left, oklab(88% -0.02 0.18), oklab(60% 0.26 0.01));
     }
-    .btn-primary {
-        @apply bg-slate-200 text-warm hover:bg-accent
-    }
-    .btn-secondary {
-        @apply btn border border-2
+    .icon-btn {
+        @apply grid place-items-center rounded-full;
     }
      
     .avatar {
@@ -198,13 +228,17 @@ body {
         cursor: pointer;
         border-radius: 2px;
         padding: 0 1px;
+        background: transparent;
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 2px;
         transition: filter 0.15s;
     }
     mark.highlight:hover { filter: brightness(1.15); }
-    .highlight-yellow { background: oklch(0.92 0.18 95 / 0.5); }
-    .highlight-green  { background: oklch(0.88 0.16 145 / 0.45); }
-    .highlight-blue   { background: oklch(0.82 0.14 255 / 0.45); }
-    .highlight-pink   { background: oklch(0.82 0.18 340 / 0.45); }
+    .highlight-yellow { color: oklch(0.92 0.18 95);  text-decoration-color: oklch(0.92 0.18 95 / 0.75); }
+    .highlight-green  { color: oklch(0.88 0.16 145); text-decoration-color: oklch(0.88 0.16 145 / 0.75); }
+    .highlight-blue   { color: oklch(0.82 0.14 255); text-decoration-color: oklch(0.82 0.14 255 / 0.75); }
+    .highlight-pink   { color: oklch(0.82 0.18 340); text-decoration-color: oklch(0.82 0.18 340 / 0.75); }
 
     /* ── Highlight toolbar ─────────────────────────────── */
     .highlight-toolbar {
@@ -253,7 +287,7 @@ body {
         border-radius: 50%;
         color: oklch(0.85 0.01 250);
         cursor: pointer;
-        transition: background 0.1s, color 0.1s;
+        transition: background-color 0.1s, color 0.1s;
     }
     .highlight-toolbar__action:hover {
         background: oklch(1 0 0 / 0.1);
@@ -283,24 +317,6 @@ body {
 }
 
 @layer utilities {
-    .bg-base {
-        @apply bg-slate-900
-    }
-    .invert .bg-base {
-        @apply bg-gray-200
-    }
-    .text-base {
-        @apply text-gray-200
-    }
-    .invert .text-base {
-        @apply text-slate-900
-    }
-    .text-accent {
-        @apply text-[--accent-solid]
-    }
-    .bg-accent {
-        @apply bg-[--accent-solid]
-    }
     .bg-warm {
         background: radial-gradient(
             circle at top left,
@@ -343,11 +359,11 @@ body {
     .hover-accent-bg:hover,
     .hover-accent-bg.active {
         --accent-solid: rgb(15 23 42);
-        @apply bg-[gold] text-slate-900 ;
+        @apply bg-[gold] text-slate-900;
     }
     .hover-accent-bg:hover svg,
     .hover-accent-bg.active svg {
-        @apply text-slate-900
+        @apply text-slate-900;
     }
 }
 

@@ -1,89 +1,119 @@
+@reference "../../../styles/global.css";
+
 .article {
-    @apply flex flex-col items-center px-2 my-4 sm:px-4 md:px-8 lg:px-16 ;
+    @apply flex flex-col items-center px-2 my-4 sm:px-4 md:px-8 lg:px-16;
 }
+
 .cover {
-    @apply aspect-[16/9] w-full h-auto block rounded-md ;
+    @apply aspect-16/9 w-full h-auto block rounded-md;
 }
+
 .header {
-    @apply flex flex-col mt-4 mx-2 ;
-    @apply sm:max-md:mx-10 sm:shadow-2xl sm:rounded-2xl sm:flex-grow-[1.5] sm:border sm:border-slate-800 ;
-    @apply md:flex-row md:gap-0 md:h-fit md:shadow-2xl md:rounded-2xl md:flex-grow-[1.5] md:border md:border-slate-800 border-opacity-50 ;
-    @apply lg:flex-nowrap ;
+    @apply flex flex-col mt-10 mx-2 starting:opacity-0 starting:translate-y-4 opacity-100 translate-y-0 transition-all duration-1000;
+    @apply sm:max-md:mx-10 sm:shadow-2xl sm:rounded-2xl sm:grow-[1.5] sm:border sm:border-slate-800;
+    @apply md:flex-row md:items-center md:gap-0 md:h-fit md:shadow-2xl md:rounded-2xl md:grow-[1.5] md:border md:border-slate-800/50;
+    @apply lg:flex-nowrap;
 }
+
 .header div:has(.cover) {
-    @apply my-2 sm:my-0 sm:p-4 md:w-1/2 ;
+    @apply my-2 sm:my-0 sm:p-4 md:w-1/2;
 }
+
 .header div:has(h1) {
-    @apply flex flex-col p-2 sm:py-4 sm:px-8 md:px-4 ;
+    @apply flex flex-col p-2 sm:py-4 sm:px-8 md:px-4;
 }
+
 .header h1 {
-    @apply inline-block  text-2xl lg:text-4xl leading-tight m-0 ;
+    @apply inline-block text-2xl lg:text-4xl leading-tight m-0;
 }
+
 .header .author {
     background: var(--ok-bg-cool);
     color: transparent;
-    @apply bg-clip-text opacity-85 ;
+    @apply bg-clip-text opacity-85;
 }
+
 .subtitle {
-    @apply text-lg font-extralight italic leading-tight opacity-85 ;
+    @apply text-lg font-extralight italic leading-tight opacity-85;
 }
+
 .avatar {
-    @apply w-8 h-8 rounded-full border-2 border-slate-400 ;
+    @apply w-8 h-8 rounded-full border-2 border-slate-400;
 }
+
+.tags-container {
+    @apply flex gap-4 my-2;
+}
+
 .tag {
-    @apply text-sm py-1 px-3 m-2 bg-slate-800 rounded-full ;
+    @apply text-sm py-1 px-3 bg-slate-800 rounded-full;
 }
+
 .meta {
     grid-template-columns: 3fr 1fr 3fr;
-    @apply flex flex-col gap-3 md:grid md:content-center md:items-center md:gap-0 text-slate-400 my-5 md:my-8 ;
+    @apply flex flex-col gap-3 starting:opacity-0 starting:translate-y-4 opacity-100 translate-y-0 transition-all duration-1000 md:grid md:content-center md:items-center md:gap-0 text-slate-400 my-5 md:my-8;
 }
+
 .meta span {
-    @apply block sm:max-md:order-1 text-center md:text-right ;
+    @apply block sm:max-md:order-1 text-center md:text-right;
 }
+
 .meta time {
-    @apply block sm:max-md:order-2 text-center md:text-left ;
+    @apply block sm:max-md:order-2 text-center md:text-left;
 }
+
 .article h2,
 .article h3 {
-    @apply inline-block text-2xl lg:text-3xl ;
+    @apply inline-block text-2xl lg:text-3xl mt-8;
 }
-.article h4, 
+
+.article h4,
 .article h5 {
-    @apply text-xl lg:text-2xl ;
+    @apply text-xl lg:text-2xl;
 }
+
 .content {
-    @apply text-lg my-4 ;
+    @apply text-lg my-4 starting:opacity-0 starting:translate-y-4 opacity-100 translate-y-0 transition-all duration-1000;
 }
+
 .content p {
-    @apply mt-2 mb-6 leading-8 sm:leading-9 opacity-85 font-medium ;
+    @apply mt-2 mb-6 text-justify leading-8 sm:leading-9 opacity-85 font-medium;
 }
+
 .content p:has(+ h2) {
     margin-bottom: 2rem;
 }
+
 .content img {
-    @apply w-4/5 h-auto m-6 shadow-sm ;
+    @apply w-4/5 h-auto m-6 shadow-sm;
 }
+
 .content ul {
     list-style-type: none;
     list-style-position: outside;
     padding-inline-start: 1.5rem;
     margin-bottom: 2rem;
 }
+
 .content ul li {
-    @apply mb-2 
+    @apply mb-2;
 }
+
 .content ul li::marker {
     content: '→  ';
     color: var(--accent-solid);
     /* @apply text-yellow-500 */
 }
+
 .content em {
     font-style: italic;
     @apply text-white;
 }
+
 .about-links {
-    @apply flex flex-row gap-2 ;
+    @apply flex flex-row gap-2;
 }
+
 .about-links li {
-    @apply w-8 h-8 text-slate-400 hover:text-slate-200 ;
+    @apply w-8 h-8 text-slate-400 hover:text-[var(--primary-color)];
 }

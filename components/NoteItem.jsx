@@ -14,6 +14,30 @@ export default function NoteItem({ note }) {
     const date = new Date(note.createdAt)
     const dateStr = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 
+    const handleShare = async () => {
+        const origin = typeof window !== 'undefined' ? window.location.origin : ''
+        const url = note.postId ? `${origin}${note.postId}` : null
+
+        const lines = []
+        if (note.sourceText) lines.push(`"${note.sourceText}"`)
+        if (note.text) lines.push(note.text)
+        if (url) lines.push(url)
+        const text = lines.filter(Boolean).join('\n\n')
+
+        const payload = { title: 'Oddword note', text }
+
+        try {
+            if (navigator.share) {
+                await navigator.share(payload)
+            } else {
+                await navigator.clipboard.writeText(text)
+                alert('Note copied to clipboard!')
+            }
+        } catch (err) {
+            console.error('Share failed:', err)
+        }
+    }
+
     return (
         <article className="note-item">
             {note.sourceText && (
@@ -34,6 +58,13 @@ export default function NoteItem({ note }) {
                         <span>source</span>
                     </a>
                 )}
+                <button
+                    className="note-item__delete"
+                    title="Share note"
+                    onClick={handleShare}
+                >
+                    <Icon icon="ri:share-line" width="14" />
+                </button>
                 <button
                     className="note-item__delete"
                     title="Delete note"

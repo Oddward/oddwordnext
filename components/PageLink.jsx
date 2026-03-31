@@ -16,14 +16,14 @@ export default function PageLink({
     // const [active, setActive] = useState( false )
 
     return(
-        <Link href="#" className={`page-link relative inline-flex content-center items-center gap-2 px-2 py-1 group ${active ? 'active':''} ${classes}`} onClick={onClick}>
+        <Link href="#" className={`page-link btn-plain relative group ${active ? 'active':''} ${classes}`} onClick={onClick}>
             <span className="icons-container inline-block relative top-[calc(50% - 0.6em)] h-[1.2em] w-[1.2em] overflow-hidden transition-all duration-200">
                     <Icon 
                         icon={ iconLabel } size={ iconSize } 
-                        class="icon absolute scale-100 text-[1.2em] group-hover:scale-0" />
+                        class="icon absolute inset-s-0 opacity-100 text-[1em] group-hover:inset-s-[-1em] group-hover:opacity-0 transition-all duration-200 ease-in-out" />
                     <Icon 
                         icon={ iconPointer } size={ iconSize } 
-                        class="icon absolute text-[--accent-solid] left-[1.2em] text-[1.2em] group-hover:left-0" />
+                        class="icon absolute text-[--accent-solid] inset-s-[1em] opacity-0 text-[1em] group-hover:inset-s-0 group-hover:opacity-100 transition-all duration-200 ease-in-out" />
             </span>
             <span className="label hidden sm:inline-block">{ label }</span>
         </Link>

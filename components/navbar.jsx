@@ -6,20 +6,99 @@ import NoteItem from "./NoteItem";
 
 import styles from "./navbar.module.css";
 import { Icon } from "@iconify-icon/react";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useGardenStore from "../store/gardenStore";
 
 export default function Navbar() {
     const toggleSidebar = useGardenStore((s) => s.toggleSidebar);
     const activeSidebar = useGardenStore((s) => s.activeSidebar);
+    const navRef = useRef(null);
+    const [isVisible, setIsVisible] = useState(true);
+    const lastScrollYRef = useRef(0);
+    const rafRef = useRef(null);
+
+    const motionClass = useMemo(() => {
+        // Mobile: slide down (off bottom). Desktop: slide up (off top).
+        // We use fixed positioning for both so it never "unsticks".
+        return isVisible
+            ? "translate-y-0 opacity-100"
+            : "translate-y-full md:-translate-y-full opacity-0 pointer-events-none";
+    }, [isVisible]);
+
+    useEffect(() => {
+        const root = document.documentElement;
+        const mq = window.matchMedia("(min-width: 768px)");
+
+        const setOffsets = (visible = isVisible) => {
+            const navH = navRef.current?.offsetHeight ?? 0;
+            const pad = navH ? `${navH + 16}px` : "0px"; // +16px breathing room
+
+            if (mq.matches) {
+                root.style.setProperty("--nav-top-pad", visible ? pad : "0px");
+                root.style.setProperty("--nav-bottom-pad", "0px");
+            } else {
+                root.style.setProperty("--nav-top-pad", "0px");
+                root.style.setProperty("--nav-bottom-pad", visible ? pad : "0px");
+            }
+        };
+
+        const onScroll = () => {
+            if (rafRef.current) return;
+            rafRef.current = window.requestAnimationFrame(() => {
+                rafRef.current = null;
+
+                const y = window.scrollY || 0;
+                const lastY = lastScrollYRef.current;
+                const delta = y - lastY;
+                lastScrollYRef.current = y;
+
+                // Always show near the top.
+                if (y < 48) {
+                    setIsVisible(true);
+                    setOffsets(true);
+                    return;
+                }
+
+                // Hide after some scroll-down distance; show on scroll-up.
+                if (delta > 6 && y > 160) {
+                    setIsVisible(false);
+                    setOffsets(false);
+                } else if (delta < -6) {
+                    setIsVisible(true);
+                    setOffsets(true);
+                }
+            });
+        };
+
+        const onResize = () => setOffsets(isVisible);
+        const onMqChange = () => setOffsets(isVisible);
+
+        // Init
+        lastScrollYRef.current = window.scrollY || 0;
+        setOffsets(isVisible);
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onResize);
+        mq.addEventListener?.("change", onMqChange);
+
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", onResize);
+            mq.removeEventListener?.("change", onMqChange);
+            if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+        };
+    }, [isVisible]);
 
     return (
-        <nav className="fixed bottom-0 md:sticky md:bottom-auto md:top-0 z-30 flex justify-between w-full px-6 py-4 border-t border-b border-slate-700 bg-slate-900 uxl:floater-nav">
+        <nav
+            ref={navRef}
+            className={`fixed bottom-0 md:bottom-auto md:top-0 md:fixed z-30 flex justify-between w-full px-6 py-4 border-t border-b border-current/5 bg-slate-900 uxl:floater-nav transition-transform duration-200 ease-out ${motionClass}`}
+        >
             <a href="/" className="w-8">
                 <Logo
                     width="32"
                     height="32"
-                    className="logo flex-shrink-0 w-6 h-6 my-2 md:w-[1.8rem] md:h-[1.8rem]"
+                    className="logo shrink-0 w-6 h-6 my-2 md:w-[1.8rem] md:h-[1.8rem]"
                 />
             </a>
             <ul className="links flex gap-12 md:gap-10">
@@ -36,7 +115,7 @@ export default function Navbar() {
                 <button
                     onClick={() => toggleSidebar('contact')}
                     aria-pressed={activeSidebar === 'contact'}
-                    className={`size-10 rounded-full border text-[gold] grid place-items-center cursor-pointer transition-colors duration-150 ${
+                    className={`size-10 btn-ghost rounded-full text-(--primary-color) grid place-items-center cursor-pointer transition-colors duration-150 ${
                         activeSidebar === 'contact'
                             ? 'border-[gold] bg-[gold]/10'
                             : 'border-slate-400'
@@ -48,7 +127,7 @@ export default function Navbar() {
                 <button
                     onClick={() => toggleSidebar('notes')}
                     aria-pressed={activeSidebar === 'notes'}
-                    className={`size-10 rounded-full border text-[gold] grid place-items-center cursor-pointer transition-colors duration-150 ${
+                    className={`size-10 btn-ghost rounded-full text-(--primary-color) grid place-items-center cursor-pointer transition-colors duration-150 ${
                         activeSidebar === 'notes'
                             ? 'border-[gold] bg-[gold]/10'
                             : 'border-slate-400'
@@ -70,8 +149,12 @@ export function NavContactForm() {
     return (
         <div
             id="contact-panel"
-            className={`fixed z-20 top-0 pt-20 flex flex-col gap-4 h-full w-xl sm:w-96 border-s border-slate-700 bg-slate-900 text-white px-8 pb-12 overflow-hidden transition-all duration-200 ease-in-out ${
-                isOpen ? 'right-0' : '-right-[30rem]'
+            style={{
+                paddingTop: "var(--nav-top-pad, 0px)",
+                paddingBottom: "var(--nav-bottom-pad, 0px)",
+            }}
+            className={`fixed z-20 top-0 flex flex-col gap-4 h-full w-full sm:w-96 border-s border-current/10 bg-slate-900 text-white shadow-2xl px-8 overflow-hidden transition-all duration-200 ease-in-out ${
+                isOpen ? 'right-0' : '-right-[40rem]'
             }`}
         >
             <div className="flex items-center justify-between pt-4">
@@ -109,17 +192,17 @@ export function NavContactForm() {
                         placeholder="enter your message..."
                     />
                 </div>
-                <button type="button" role="submit" className={styles.btn}>
+                <button type="button" role="submit" className={`btn-solid`}>
                     <Icon icon="ri:send-plane-fill" size="1.2em" class="icon" />
                     <span>Send</span>
                 </button>
             </form>
             <hr />
-            <button type="button" className={styles.btn}>
+            <button type="button" className={styles.navPanelBtn}>
                 <Icon icon="icon-park-outline:clipboard" size="1.2em" class="icon" />
                 <span>Copy email address</span>
             </button>
-            <button type="button" className={styles.btn}>
+            <button type="button" className={styles.navPanelBtn}>
                 <Icon icon="icon-park-outline:mail-edit" size="1.2em" class="icon" />
                 <span>Open mail client</span>
             </button>
@@ -133,6 +216,7 @@ export function NavNotesSidebar() {
     const notes         = useGardenStore((s) => s.notes);
     const addNote       = useGardenStore((s) => s.addNote);
     const shareNotes    = useGardenStore((s) => s.shareNotes);
+    const exportAsMarkdown = useGardenStore((s) => s.exportAsMarkdown);
     const clearAll      = useGardenStore((s) => s.clearAll);
 
     const [noteText, setNoteText] = useState('');
@@ -148,7 +232,11 @@ export function NavNotesSidebar() {
     return (
         <div
             id="notes-panel"
-            className={`fixed z-20 top-0 pt-20 flex flex-col gap-4 h-full w-full sm:w-96 border-s border-slate-700 bg-slate-900 text-white px-8 pb-12 overflow-y-auto transition-all duration-300 ease-in-out ${
+            style={{
+                paddingTop: "var(--nav-top-pad, 0px)",
+                paddingBottom: "var(--nav-bottom-pad, 0px)",
+            }}
+            className={`fixed z-20 top-0 flex flex-col gap-4 h-full w-full sm:w-96 border-s border-current/10 bg-slate-900 text-white shadow-2xl px-8 overflow-y-auto transition-all duration-300 ease-in-out ${
                 isOpen ? 'right-0' : '-right-[40rem]'
             }`}
         >
@@ -158,15 +246,22 @@ export function NavNotesSidebar() {
                     {notes.length > 0 && (
                         <>
                             <button
+                                onClick={exportAsMarkdown}
+                                className="btn-subtle rounded-full size-8 text-xs text-slate-400 hover:text-white transition-colors"
+                                title="Download as Markdown"
+                            >
+                                <Icon icon="ri:markdown-line" width="18" />
+                            </button>
+                            <button
                                 onClick={shareNotes}
-                                className="text-slate-400 hover:text-white transition-colors"
+                                className="btn-subtle rounded-full size-8 text-xs text-slate-400 hover:text-white transition-colors"
                                 title="Share notes"
                             >
                                 <Icon icon="ri:share-line" width="18" />
                             </button>
                             <button
                                 onClick={clearAll}
-                                className="text-slate-400 hover:text-red-400 transition-colors"
+                                className="btn-subtle rounded-full size-8 text-xs text-slate-400 hover:text-red-400 transition-colors"
                                 title="Clear all notes"
                             >
                                 <Icon icon="ri:delete-bin-line" width="18" />
@@ -175,7 +270,7 @@ export function NavNotesSidebar() {
                     )}
                     <button
                         onClick={closeSidebar}
-                        className="text-slate-400 hover:text-white transition-colors"
+                        className="btn-subtle rounded-full size-8 text-xs text-slate-400 hover:text-white transition-colors"
                         title="Close"
                     >
                         <Icon icon="ri:close-line" width="20" />
@@ -197,7 +292,7 @@ export function NavNotesSidebar() {
                 <button
                     onClick={handleSave}
                     disabled={!noteText.trim()}
-                    className={`${styles.btn} disabled:opacity-40 disabled:cursor-not-allowed`}
+                    className={`${styles.navPanelBtn} disabled:opacity-40 disabled:cursor-not-allowed`}
                 >
                     <Icon icon="ri:save-3-line" size="1.2em" class="icon" />
                     <span>Save Note</span>

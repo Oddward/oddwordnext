@@ -18,13 +18,17 @@ import useGardenStore from '../store/gardenStore'
 export default function HighlightableContent({ children, postId }) {
     const contentRef = useRef(null)
     const [toolbar, setToolbar] = useState(null)
-    // toolbar shape: { top, left, text, range }
+    // toolbar shape: { top, left, text, range, markEl? }
 
     const addNote = useGardenStore((s) => s.addNote)
     const openSidebar = useGardenStore((s) => s.openSidebar)
 
     // ── Selection detection ──────────────────────────────────────────────────
     const handleMouseUp = useCallback((e) => {
+        // Clicking an existing highlight will collapse selection and would
+        // immediately clear the toolbar. Let the click handler manage it.
+        if (e?.target?.closest?.('mark.highlight')) return
+
         // Short delay so the browser finalises the selection object
         setTimeout(() => {
             const sel = window.getSelection()
@@ -72,10 +76,40 @@ export default function HighlightableContent({ children, postId }) {
         }
     }, [])
 
+    // Re-open toolbar when clicking an existing highlight
+    const handleContentClick = useCallback((e) => {
+        const mark = e.target?.closest?.('mark.highlight')
+        if (!mark || !contentRef.current?.contains(mark)) return
+
+        const text = mark.textContent?.trim()
+        if (!text) return
+
+        const range = document.createRange()
+        range.selectNodeContents(mark)
+
+        const rect = mark.getBoundingClientRect()
+        const toolbarWidth = 220
+        const left = Math.min(
+            Math.max(rect.left + window.scrollX + rect.width / 2 - toolbarWidth / 2, 8),
+            window.innerWidth - toolbarWidth - 8
+        )
+        const top = rect.top + window.scrollY - 52
+
+        setToolbar({ top, left, text, range, markEl: mark })
+    }, [])
+
     // ── Toolbar actions ──────────────────────────────────────────────────────
     const handleHighlight = useCallback((colorName, colorCls) => {
         if (!toolbar?.range) return
         try {
+            // If the user clicked an existing highlight, just update its color.
+            if (toolbar.markEl) {
+                toolbar.markEl.className = `highlight highlight-${colorName}`
+                setToolbar(null)
+                window.getSelection()?.removeAllRanges()
+                return
+            }
+
             const mark = document.createElement('mark')
             mark.className = `highlight highlight-${colorName}`
             mark.dataset.highlightId = crypto.randomUUID()
@@ -113,7 +147,12 @@ export default function HighlightableContent({ children, postId }) {
     }, [toolbar])
 
     return (
-        <div ref={contentRef} onMouseUp={handleMouseUp} className="highlightable-content">
+        <div
+            ref={contentRef}
+            onMouseUp={handleMouseUp}
+            onClickCapture={handleContentClick}
+            className="highlightable-content"
+        >
             {children}
             <HighlightToolbar
                 position={toolbar ? { top: toolbar.top, left: toolbar.left } : null}

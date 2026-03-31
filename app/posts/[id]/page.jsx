@@ -42,21 +42,23 @@ export default async function Post({ params }) {
                         <h1 className={``}>{postData.title}</h1>
                         <p className={styles.subtitle}>{postData.subtitle}</p>
                         <div
-                            className={`flex flex-row flex-shrink-[1.5] items-center gap-2 py-4`}
+                            className={`flex flex-row shrink-[1.5] items-center gap-2 py-4`}
                         >
                             <p>
-                                —<span className={styles.author}>Mugtaba G</span>
+                                —<span className={styles.author} aria-label="Author">Mugtaba G</span>
                             </p>
                         </div>
-                        <div>
-                            <span className={`${styles.tag}`}>
-                                {postData.tags}
-                            </span>
+                        <div className={styles.tagsContainer}>
+                            {postData.tags?.map((tag) => (
+                                <span key={tag} className={styles.tag}>
+                                    {tag}
+                                </span>
+                            ))}
                         </div>
                     </div>
                 </header>
 
-                <div className={`m-6 max-w-[65ch]`}>
+                <div className={`m-6 max-w-[90ch]`}>
                     <div className={styles.meta}>
                         <span>Article post</span>
                         <Logo
@@ -75,7 +77,7 @@ export default async function Post({ params }) {
                         />
                     </HighlightableContent>
 
-                    <div className={`flex flex-row gap-4 w-full mx-8`}>
+                    <div className={`flex flex-row gap-4 w-full my-12`}>
                         <hr className="border-slate-600 w-full" />
                         <Image
                             src={`/images/3_backticks_regular_pgrad.svg`}
@@ -99,7 +101,7 @@ export default async function Post({ params }) {
                                 Mugtaba G
                             </span>
                         </div>
-                        <small>
+                        <small className="inline-block mb-6">
                             African raised in Asia, a melting pot of cultures
                             and interests with most of them revolving around
                             visual arts, natural sciences and understanding
@@ -149,8 +151,11 @@ export default async function Post({ params }) {
                     </div>
                 </div>
             </article>
-            <div className="mt-12 mx-auto max-w-[65ch]">
-                <Link href="/">← Back to home</Link>
+            <div className="mt-12 mx-auto max-w-[90ch]">
+                <Link href="/" className="btn-outline w-auto rounded-full size-10" aria-label="Back to home">
+                    <Icon icon="ri:arrow-left-line" />
+                    <span className="hidden md:inline-block">Back to home</span>
+                </Link>
             </div>
         </>
     )

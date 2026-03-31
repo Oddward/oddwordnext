@@ -22,6 +22,7 @@ export default async function Home() {
                             className="aspect-auto w-full h-auto border-l border-b border-slate-300 rounded-bl-[1.5rem] md:rounded-bl-[2rem] lg:rounded-bl-[2.5rem]"
                             width={300}
                             height={300}
+                            loading='eager'
                         />
                     </div>
 
