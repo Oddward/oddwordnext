@@ -1,4 +1,6 @@
-@reference "../../../styles/global.css";
+/* Use Tailwind’s reference import so @apply resolves utilities without bundling the
+   entire global.css (which was triggering mis-reported `group` errors at :1:1). */
+@import "tailwindcss" reference;
 
 .article {
     @apply flex flex-col items-center px-2 my-4 sm:px-4 md:px-8 lg:px-16;

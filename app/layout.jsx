@@ -10,7 +10,7 @@ export const metadata = {
         default: siteTitle,
         template: `%s | ${siteTitle}`,
     },
-    description: 'Learn how to build a personal website using Next.js',
+    description: 'Oddward\'s digital garden to explore ideas around personal development, software development, design, art, and where those threads intersect.',
     icons: {
         icon: '/favicon.ico',
     },

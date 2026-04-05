@@ -101,7 +101,7 @@ export default function Navbar() {
                     className="logo shrink-0 w-6 h-6 my-2 md:w-[1.8rem] md:h-[1.8rem]"
                 />
             </a>
-            <ul className="links flex gap-12 md:gap-10">
+            <ul className="links flex gap-4 md:gap-10">
                 <PageLink
                     label="Home"
                     iconLabel="ri:home-2-line"
@@ -301,7 +301,7 @@ export function NavNotesSidebar() {
 
             {/* Saved notes list */}
             {notes.length > 0 ? (
-                <ul className="flex flex-col gap-3 mt-2">
+                <ul className="flex flex-col gap-3 mt-2 [&>*:not(:last-child)]:border-b [&>*:not(:last-child)]:pb-3 [&>*:not(:last-child)]:border-current/10">
                     {notes.map((note) => (
                         <li key={note.id}>
                             <NoteItem note={note} />

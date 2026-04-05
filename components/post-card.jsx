@@ -1,7 +1,6 @@
 'use client'
 
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
-import styles from "./post-card.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function PostCard({

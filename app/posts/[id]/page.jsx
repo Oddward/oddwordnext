@@ -1,5 +1,6 @@
 import Date from '../../../components/date'
 import { getAllPostIds, getPostData } from '../../../lib/posts'
+import { POST_TYPE_LABELS } from '../../../lib/postTypes'
 import Link from 'next/link'
 import styles from './post.module.css'
 import Image from 'next/image'
@@ -21,9 +22,15 @@ export async function generateMetadata({ params }) {
     }
 }
 
+/** Shipped asset used when frontmatter has no thumbnail (non-article posts, drafts). */
+const FALLBACK_COVER = '/images/3_backticks_regular_pgrad.svg'
+
 export default async function Post({ params }) {
     const { id } = await params
     const postData = await getPostData(id)
+    const typeLabel =
+        POST_TYPE_LABELS[postData.postType] ?? POST_TYPE_LABELS.article
+    const coverSrc = postData.thumbnail || FALLBACK_COVER
 
     return (
         <>
@@ -31,8 +38,8 @@ export default async function Post({ params }) {
                 <header className={styles.header}>
                     <div className={``}>
                         <Image
-                            src={postData.thumbnail}
-                            alt="header image for article"
+                            src={coverSrc}
+                            alt={postData.title ? `Cover: ${postData.title}` : 'Post cover'}
                             className={styles.cover}
                             width={300}
                             height={200}
@@ -40,7 +47,9 @@ export default async function Post({ params }) {
                     </div>
                     <div className={``}>
                         <h1 className={``}>{postData.title}</h1>
-                        <p className={styles.subtitle}>{postData.subtitle}</p>
+                        {postData.subtitle ? (
+                            <p className={styles.subtitle}>{postData.subtitle}</p>
+                        ) : null}
                         <div
                             className={`flex flex-row shrink-[1.5] items-center gap-2 py-4`}
                         >
@@ -48,19 +57,21 @@ export default async function Post({ params }) {
                                 —<span className={styles.author} aria-label="Author">Mugtaba G</span>
                             </p>
                         </div>
-                        <div className={styles.tagsContainer}>
-                            {postData.tags?.map((tag) => (
-                                <span key={tag} className={styles.tag}>
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
+                        {postData.tags?.length > 0 ? (
+                            <div className={styles.tagsContainer}>
+                                {postData.tags.map((tag) => (
+                                    <span key={tag} className={styles.tag}>
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        ) : null}
                     </div>
                 </header>
 
                 <div className={`m-6 max-w-[90ch]`}>
                     <div className={styles.meta}>
-                        <span>Article post</span>
+                        <span>{typeLabel}</span>
                         <Logo
                             outline
                             className={` w-12 h-12 stroke-2 stroke-current overflow-visible mx-auto`}

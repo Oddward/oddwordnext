@@ -295,17 +295,22 @@ body {
     }
 
     /* ── Note item ─────────────────────────────────────── */
+    /* Stack variants (e.g. parent-hover) cannot be used with @apply; use plain :hover rules instead. */
     .note-item {
-        @apply flex flex-col gap-1 p-3 rounded-lg border border-slate-700 bg-slate-800/60 text-sm;
+        @apply flex flex-col gap-1 text-sm;
     }
     .note-item__quote {
-        @apply border-l-2 border-[gold] pl-2 text-slate-300 italic text-xs leading-relaxed;
+        @apply border-[gold] text-slate-300 italic text-xs leading-relaxed;
+        transition: color 0.15s ease;
+    }
+    .note-item:hover .note-item__quote {
+        color: var(--accent-solid);
     }
     .note-item__text {
         @apply text-slate-200 leading-relaxed;
     }
     .note-item__footer {
-        @apply flex items-center gap-2 mt-1 text-slate-500 text-xs;
+        @apply flex items-center gap-4 mt-1 text-slate-500 text-xs;
     }
     .note-item__date { @apply flex-1; }
     .note-item__source {

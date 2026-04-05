@@ -1,10 +1,40 @@
-@reference "../styles/global.css";
+/* Avoid @apply here: CSS modules processed with @tailwindcss/postcss can mis-report errors
+   on this file when theme utilities are expanded. Plain CSS keeps nav styles predictable. */
 
 .text-input {
-    @apply block bg-transparent border-b border-b-slate-100 focus-visible:border-[gold] focus-visible:outline-none text-slate-200 w-full p-2;
-}
-/* Named .navPanelBtn (not .btn) to avoid conflicting with the global `.btn` component class. */
-.navPanelBtn {
-    @apply flex content-center items-center justify-center gap-4 w-full bg-slate-900 text-white hover:bg-slate-700 active:scale-95 rounded-md px-4 py-2 transition-transform duration-200;
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgb(241 245 249); /* slate-100 */
+    color: rgb(226 232 240); /* slate-200 */
+    outline: none;
 }
 
+.text-input:focus-visible {
+    border-bottom-color: gold;
+    outline: none;
+}
+
+/* Named .navPanelBtn (not .btn) to avoid conflicting with the global `.btn` component class. */
+.navPanelBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    background-color: rgb(15 23 42); /* slate-900 */
+    color: rgb(255 255 255);
+    transition: transform 0.2s ease;
+}
+
+.navPanelBtn:hover {
+    background-color: rgb(51 65 85); /* slate-700 */
+}
+
+.navPanelBtn:active {
+    transform: scale(0.95);
+}

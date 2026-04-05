@@ -24,7 +24,7 @@ export default function NoteItem({ note }) {
         if (url) lines.push(url)
         const text = lines.filter(Boolean).join('\n\n')
 
-        const payload = { title: 'Oddword note', text }
+        const payload = { title: 'OddWord note', text }
 
         try {
             if (navigator.share) {
@@ -41,7 +41,7 @@ export default function NoteItem({ note }) {
     return (
         <article className="note-item">
             {note.sourceText && (
-                <blockquote className="note-item__quote">
+                <blockquote className="note-item__quote border-0 p-0">
                     "{note.sourceText}"
                 </blockquote>
             )}
