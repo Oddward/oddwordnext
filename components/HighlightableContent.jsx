@@ -17,6 +17,7 @@ import useGardenStore from '../store/gardenStore'
  */
 export default function HighlightableContent({ children, postId }) {
     const contentRef = useRef(null)
+    const selectionDebounceRef = useRef(null)
     const [toolbar, setToolbar] = useState(null)
     // toolbar shape: { top, left, text, range, markEl? }
 
@@ -24,55 +25,104 @@ export default function HighlightableContent({ children, postId }) {
     const openSidebar = useGardenStore((s) => s.openSidebar)
 
     // ── Selection detection ──────────────────────────────────────────────────
+    // Mobile browsers often never fire mouseup after a touch text selection, so we
+    // rely on selectionchange (debounced) as the primary signal. Desktop still uses
+    // mouseup for a snappy response; both paths share this logic.
+    const syncToolbarFromSelection = useCallback(() => {
+        const sel = window.getSelection()
+        if (!sel || sel.isCollapsed || !sel.rangeCount) {
+            setToolbar(null)
+            return
+        }
+
+        const range = sel.getRangeAt(0)
+        const text = sel.toString().trim()
+        if (!text) {
+            setToolbar(null)
+            return
+        }
+
+        if (!contentRef.current?.contains(range.commonAncestorContainer)) {
+            setToolbar(null)
+            return
+        }
+
+        // Safari (especially iOS) can report an empty rect for a valid range; merge getClientRects().
+        let rect = range.getBoundingClientRect()
+        if (rect.width === 0 && rect.height === 0) {
+            const rects = range.getClientRects()
+            if (rects.length === 0) {
+                setToolbar(null)
+                return
+            }
+            let minL = Infinity
+            let minT = Infinity
+            let maxR = -Infinity
+            let maxB = -Infinity
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i]
+                minL = Math.min(minL, r.left)
+                minT = Math.min(minT, r.top)
+                maxR = Math.max(maxR, r.right)
+                maxB = Math.max(maxB, r.bottom)
+            }
+            rect = {
+                left: minL,
+                top: minT,
+                width: maxR - minL,
+                height: maxB - minT,
+            }
+        }
+
+        const toolbarWidth = 220
+        const left = Math.min(
+            Math.max(rect.left + window.scrollX + rect.width / 2 - toolbarWidth / 2, 8),
+            window.innerWidth - toolbarWidth - 8
+        )
+        const top = rect.top + window.scrollY - 52
+
+        setToolbar({ top, left, text, range })
+    }, [])
+
     const handleMouseUp = useCallback((e) => {
         // Clicking an existing highlight will collapse selection and would
         // immediately clear the toolbar. Let the click handler manage it.
         if (e?.target?.closest?.('mark.highlight')) return
 
         // Short delay so the browser finalises the selection object
-        setTimeout(() => {
-            const sel = window.getSelection()
-            if (!sel || sel.isCollapsed || !sel.rangeCount) {
-                setToolbar(null)
-                return
-            }
+        setTimeout(syncToolbarFromSelection, 10)
+    }, [syncToolbarFromSelection])
 
-            const range = sel.getRangeAt(0)
-            const text = sel.toString().trim()
-            if (!text) { setToolbar(null); return }
+    // selectionchange fires for touch text selection where mouseup often does not (iOS/Android).
+    // Debounce so we read the selection once handles/caret settle, not on every drag frame.
+    useEffect(() => {
+        const onSelectionChange = () => {
+            if (selectionDebounceRef.current) clearTimeout(selectionDebounceRef.current)
+            selectionDebounceRef.current = setTimeout(() => {
+                selectionDebounceRef.current = null
+                syncToolbarFromSelection()
+            }, 120)
+        }
+        document.addEventListener('selectionchange', onSelectionChange)
+        return () => {
+            document.removeEventListener('selectionchange', onSelectionChange)
+            if (selectionDebounceRef.current) clearTimeout(selectionDebounceRef.current)
+        }
+    }, [syncToolbarFromSelection])
 
-            // Only trigger if the selection is inside our content area
-            if (!contentRef.current?.contains(range.commonAncestorContainer)) {
-                setToolbar(null)
-                return
-            }
-
-            const rect = range.getBoundingClientRect()
-            // Position toolbar centred above the selection, clamped to viewport
-            const toolbarWidth = 220
-            const left = Math.min(
-                Math.max(rect.left + window.scrollX + rect.width / 2 - toolbarWidth / 2, 8),
-                window.innerWidth - toolbarWidth - 8
-            )
-            const top = rect.top + window.scrollY - 52 // 52px above selection
-
-            setToolbar({ top, left, text, range })
-        }, 10)
-    }, [])
-
-    // Dismiss on outside click or Escape
+    // Dismiss on outside tap/click or Escape (pointerdown covers touch + mouse; mousedown misses many touch cases)
     useEffect(() => {
         const handleKeyDown = (e) => { if (e.key === 'Escape') setToolbar(null) }
-        const handleClick = (e) => {
+        const handlePointerDown = (e) => {
             const tb = document.getElementById('highlight-toolbar')
             if (tb && tb.contains(e.target)) return
             if (!contentRef.current?.contains(e.target)) setToolbar(null)
         }
         document.addEventListener('keydown', handleKeyDown)
-        document.addEventListener('mousedown', handleClick)
+        document.addEventListener('pointerdown', handlePointerDown)
         return () => {
             document.removeEventListener('keydown', handleKeyDown)
-            document.removeEventListener('mousedown', handleClick)
+            document.removeEventListener('pointerdown', handlePointerDown)
         }
     }, [])
 

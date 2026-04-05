@@ -29,8 +29,9 @@ export default function HighlightToolbar({ position, onHighlight, onAddToNotes, 
             aria-label="Text actions"
             className="highlight-toolbar"
             style={{ top: position.top, left: position.left }}
-            // Prevent the mousedown from clearing the selection before onClick fires
+            // Prevent pointer default so the browser does not collapse the selection before onClick (esp. iOS)
             onMouseDown={(e) => e.preventDefault()}
+            onTouchStart={(e) => e.preventDefault()}
         >
             {/* Color swatches */}
             <div className="highlight-toolbar__colors" role="group" aria-label="Highlight color">
